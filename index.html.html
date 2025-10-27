@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Kalbimin Sahibi</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+
+    body {
+      margin: 0;
+      background: black;
+      overflow: hidden;
+      font-family: 'Great Vibes', cursive;
+    }
+
+    canvas {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    #message {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      bottom: 60px;
+      font-size: 36px;
+      color: red;
+      font-style: italic;
+      letter-spacing: 2px;
+      white-space: pre;
+      pointer-events: none;
+      z-index: 1;
+      text-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+    }
+
+    #signature {
+      position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: red;
+  font-size: 48px;
+  font-family: 'Pacifico', cursive;
+  opacity: 0.9;
+  z-index: 1;
+  text-shadow: 0 0 8px rgba(255, 0, 0, 0.6); 
+    }
+    
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <div id="message"></div>
+  <div id="signature">kCg</div>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const scale = 10;
+
+    // Kalp eğrisi noktaları
+    const points = [];
+    for (let t = 0; t < Math.PI * 2; t += 0.01) {
+      const x = 16 * Math.pow(Math.sin(t), 3);
+      const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+      points.push({ x: centerX + x * scale, y: centerY - y * scale });
+    }
+
+    // Rastgele sırala
+    const shuffled = points.sort(() => Math.random() - 0.5);
+    let index = 0;
+
+    // Yazı animasyonu
+    const fullText = "Kalbimin sahibi";
+    let textIndex = 0;
+    const messageDiv = document.getElementById('message');
+
+    function draw() {
+      if (index < shuffled.length) {
+        const point = shuffled[index];
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY); // merkezden başla
+        ctx.lineTo(point.x, point.y);
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+        index++;
+      }
+
+      if (textIndex < fullText.length && index % 7 === 0) {
+        messageDiv.textContent += fullText[textIndex];
+        textIndex++;
+      }
+
+      setTimeout(() => requestAnimationFrame(draw), 20); // daha yavaş çizim
+    }
+
+    draw();
+  </script>
+</body>
+</html>
